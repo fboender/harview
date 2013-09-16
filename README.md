@@ -15,6 +15,7 @@ for long dumps with many requests (such as debugging SAML / OAuth / etc). These
 can be captured in Chrome by enabling the "Preserve Log upon Navigation" button
 in the Network analyser.
 
+More information is available here: http://www.electricmonk.nl/log/2013/09/16/quick-n-dirty-har-http-archive-viewer/
 
 Requirements
 ------------
