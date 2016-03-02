@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     url_filter = set()
     if args.filter_refs or args.filter_all:
-        url_filter.update(('.js', '.css', '.woff'))
+        url_filter.update(('.js', '.css', '.woff', '.otf'))
     if args.filter_img or args.filter_all:
         url_filter.update(('.png', '.jpg', '.jpeg', '.gif'))
 
