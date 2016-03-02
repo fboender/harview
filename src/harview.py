@@ -146,7 +146,10 @@ if __name__ == "__main__":
                 # Print response body
                 if 'text' in entry['response']['content']:
                     sys.stdout.write('    Response data (%s)\n' % (entry['response']['content']['mimeType']))
-                    sys.stdout.write(text_wrap(entry['response']['content']['text'] + '\n',  cols=cols, ident=8))
+                    try:
+                        sys.stdout.write(text_wrap(entry['response']['content']['text'] + '\n',  cols=cols, ident=8))
+                    except:
+                        sys.stderr.write('Response data can not be displayed\n')
 
 
             sys.stdout.write('\n')
