@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
+
 import sys
 import json
 import argparse
 import urlparse
 import os
+
 
 def get_terminal_size():
     import os
@@ -30,11 +32,13 @@ def get_terminal_size():
 
     return int(cr[1]), int(cr[0])
 
+
 def color(color):
     if color:
         sys.stdout.write('\033[%sm' % (30 + color));
     else:
         sys.stdout.write('\033[0m')
+
 
 def text_wrap(s, cols=72, ident=4, ident_first=True):
     """
@@ -61,6 +65,7 @@ def text_wrap(s, cols=72, ident=4, ident_first=True):
             new_s += c
         pos += 1
     return(new_s)
+
 
 if __name__ == "__main__":
     global options
