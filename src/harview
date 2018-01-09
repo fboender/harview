@@ -4,8 +4,13 @@
 import sys
 import json
 import argparse
-import urlparse
 import os
+
+
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 
 
 def get_terminal_size():
@@ -88,17 +93,17 @@ if __name__ == "__main__":
     cols, lines = get_terminal_size()
 
     try:
-        har = json.load(file(args.har_file, 'r'))
+        har = json.load(open(args.har_file, 'r'))
     except IndexError:
         sys.stderr.write("Usage: %s <file.har>\n" % (sys.argv[0]))
         sys.exit(1)
-    except ValueError, e:
+    except ValueError as e:
         sys.stderr.write("Invalid .har file: %s\n" % (str(e)))
         sys.exit(2)
 
     for entry in har['log']['entries']:
         # Filter out any requests we don't want to see
-        url = urlparse.urlparse(entry['request']['url'])
+        url = urlparse(entry['request']['url'])
         fname, ext = os.path.splitext(url.path)
         if ext in url_filter:
             continue
