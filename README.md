@@ -104,4 +104,6 @@ The output of which would look something like:
 License
 -------
 
-MIT.
+Harview is open source, released under the MIT license. Please see the
+`LICENSE` file for a full copy of the MIT license.
+
