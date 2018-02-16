@@ -23,6 +23,13 @@ Requirements
 Python.
 
 
+Installation
+------------
+
+Installation is easiest via Pip:
+
+    sudo pip install harview
+
 Usage
 -----
 
