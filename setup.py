@@ -18,6 +18,7 @@ setup(
     long_description='',
     license='GPLv3',
     author='Ferry Boender',
+    author_email='ferry.boender@gmail.com',
     url='https://github.com/fboender/harview',
     scripts=[
         'src/harview',
