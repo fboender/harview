@@ -10,7 +10,7 @@ except ImportError:
 
 setup(
     name='harview',
-    version='0.2.1',
+    version='0.2.2',
     description=(
         'A commandline tool which takes as input a .har (HTTP Archive) file '
         'and dumps a human-readable summary of it to the console'
