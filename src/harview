@@ -71,6 +71,73 @@ def text_wrap(s, cols=72, ident=4, ident_first=True):
         pos += 1
     return(new_s)
 
+def should_output_entry(entry, url_filter, grep_req):
+    """
+    Inspects the entry (request) and determines if it needs to be displayed.
+    """
+    url = urlparse(entry['request']['url'])
+    fname, ext = os.path.splitext(url.path)
+    if ext in url_filter:
+        return False
+
+    return True
+
+def output_entry(entry, show_color, verbose):
+    if show_color is True:
+        i = str(entry['response']['status'])[0]
+        if i in ['4', '5']: # Client / Server error
+            color(1)
+        elif i in ['2']: # OK reponses
+            color(2)
+        else: # Other responses
+            color(3)
+
+    sys.stdout.write(str(entry['response']['status']))
+
+    if show_color is True:
+        color(None)
+
+    sys.stdout.write(' %s %s\n' % (
+            entry['request']['method'],
+            entry['request']['url']
+        )
+    )
+
+    if verbose > 0:
+        # Print headers
+        sys.stdout.write('    Request headers\n')
+        for header in entry['request']['headers']:
+            ident = len('        %s: ' % (header['name']))
+            sys.stdout.write('        %s: %s\n' % (
+                    header['name'],
+                    text_wrap(header['value'], cols=cols, ident=ident, ident_first=False)
+                )
+            )
+
+        if verbose > 1:
+            # Print request body
+            if entry['request']['method'] == 'POST':
+                sys.stdout.write('    POST data (%s)\n' % (entry['request']['postData']['mimeType']))
+                sys.stdout.write(text_wrap(entry['request']['postData']['text'] + '\n',  cols=cols, ident=8))
+
+        sys.stdout.write('    Response headers (status = %s)\n' % (entry['response']['status']))
+        for header in entry['response']['headers']:
+            sys.stdout.write('        %s: %s\n' % (
+                header['name'], header['value']
+                )
+            )
+
+        if verbose > 1:
+            # Print response body
+            if 'text' in entry['response']['content']:
+                sys.stdout.write('    Response data (%s)\n' % (entry['response']['content']['mimeType']))
+                try:
+                    sys.stdout.write(text_wrap(entry['response']['content']['text'] + '\n',  cols=cols, ident=8))
+                except:
+                    sys.stderr.write('Response data can not be displayed\n')
+
+
+        sys.stdout.write('\n')
 
 if __name__ == "__main__":
     global options
@@ -102,64 +169,6 @@ if __name__ == "__main__":
         sys.exit(2)
 
     for entry in har['log']['entries']:
-        # Filter out any requests we don't want to see
-        url = urlparse(entry['request']['url'])
-        fname, ext = os.path.splitext(url.path)
-        if ext in url_filter:
-            continue
+        if should_output_entry(entry, url_filter, args.grep_req):
+            output_entry(entry, not args.nocolor, args.verbose)
 
-        if not args.nocolor:
-            i = str(entry['response']['status'])[0]
-            if i in ['4', '5']: # Client / Server error
-                color(1)
-            elif i in ['2']: # OK reponses
-                color(2)
-            else: # Other responses
-                color(3)
-
-        sys.stdout.write(str(entry['response']['status']))
-
-        if not args.nocolor:
-            color(None)
-
-        sys.stdout.write(' %s %s\n' % (
-                entry['request']['method'],
-                entry['request']['url']
-            )
-        )
-
-        if args.verbose > 0:
-            # Print headers
-            sys.stdout.write('    Request headers\n')
-            for header in entry['request']['headers']:
-                ident = len('        %s: ' % (header['name']))
-                sys.stdout.write('        %s: %s\n' % (
-                        header['name'],
-                        text_wrap(header['value'], cols=cols, ident=ident, ident_first=False)
-                    )
-                )
-
-            if args.verbose > 1:
-                # Print request body
-                if entry['request']['method'] == 'POST':
-                    sys.stdout.write('    POST data (%s)\n' % (entry['request']['postData']['mimeType']))
-                    sys.stdout.write(text_wrap(entry['request']['postData']['text'] + '\n',  cols=cols, ident=8))
-
-            sys.stdout.write('    Response headers (status = %s)\n' % (entry['response']['status']))
-            for header in entry['response']['headers']:
-                sys.stdout.write('        %s: %s\n' % (
-                    header['name'], header['value']
-                    )
-                )
-
-            if args.verbose > 1:
-                # Print response body
-                if 'text' in entry['response']['content']:
-                    sys.stdout.write('    Response data (%s)\n' % (entry['response']['content']['mimeType']))
-                    try:
-                        sys.stdout.write(text_wrap(entry['response']['content']['text'] + '\n',  cols=cols, ident=8))
-                    except:
-                        sys.stderr.write('Response data can not be displayed\n')
-
-
-            sys.stdout.write('\n')
