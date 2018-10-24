@@ -88,7 +88,7 @@ if __name__ == "__main__":
     if args.filter_refs or args.filter_all:
         url_filter.update(('.js', '.css', '.woff', '.otf'))
     if args.filter_img or args.filter_all:
-        url_filter.update(('.png', '.jpg', '.jpeg', '.gif'))
+        url_filter.update(('.png', '.jpg', '.jpeg', '.gif', '.svg'))
 
     cols, lines = get_terminal_size()
 
