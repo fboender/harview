@@ -83,12 +83,12 @@ def should_output_entry(entry, url_filter, grep_req):
     return True
 
 def output_entry(entry, show_color, verbose):
-    if show_color is True:
-        if entry['response']['status'] == 0:
-            status_code = '  0'
-        else:
-            status_code = str(entry['response']['status'])
+    if entry['response']['status'] == 0:
+        status_code = '  0'
+    else:
+        status_code = str(entry['response']['status'])
 
+    if show_color is True:
         if status_code[0] in ['4', '5']: # Client / Server error
             color(1)
         elif status_code[0] == '2': # OK reponses
