@@ -35,24 +35,28 @@ Usage
 
 From the `--help`:
 
-    usage: harview.py [-h] [-v] [--filter-img] [--filter-refs] [--filter-all]
-                      [--nocolor]
-                      har_file
-    
+    usage: harview [-h] [-v] [--filter-img] [--filter-refs] [--filter-all]
+                   [--grep-req GREP_REQ] [--grep-res GREP_RES] [--nocolor]
+                   har_file
+
     positional arguments:
       har_file
-    
+
     optional arguments:
-      -h, --help     show this help message and exit
-      -v, --verbose  Show more. Can be used multiple times
-      --filter-img   Filter out requests for images
-      --filter-refs  Filter out requests for CSS, JS, etc
-      --filter-all   All filters
+      -h, --help           show this help message and exit
+      -v, --verbose        Show more. Can be used multiple times
+      --filter-img         Filter out requests for images
+      --filter-refs        Filter out requests for CSS, JS, etc
+      --filter-all         All filters
+      --grep-req GREP_REQ  Only show requests where Request headers contain
+                           GREP_REQ.
+      --grep-res GREP_RES  Only show requests where Response headers contain
+                           GREP_RES.
       --nocolor
 
-Example:
+Examples:
 
-    harview.py -vv --filter-all img ./login.myorg.com.har
+    harview.py -vv --filter-all example.har
 
 The output of which would look something like:
 
@@ -106,6 +110,17 @@ The output of which would look something like:
             Content-Length: 239
             X-XSS-Protection: 1; mode=block
             Expires: Mon, 16 Sep 2013 18:02:05 GMT
+
+You can limit the entries shown with the `--grep-req` and `grep-res` options:
+
+    harview --grep-res 'Content-Type: text' example.har
+    200 GET https://github.com/fboender/harview
+    200 GET https://assets-cdn.github.com/assets/frameworks-5aa6d9885579bb2359f66266aee26f3b.css
+    200 GET https://assets-cdn.github.com/assets/github-183b206659a9b3e5eb123ceb5316db95.css
+    200 GET https://github.com/fboender/harview/show_partial?partial=tree%2Frecently_touched_branches_list
+
+    harview --grep-req 'X-Requested-With: XMLHttpRequest' example.har
+    200 GET https://github.com/fboender/harview/show_partial?partial=tree%2Frecently_touched_branches_list
 
 
 License

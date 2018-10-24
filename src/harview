@@ -71,7 +71,7 @@ def text_wrap(s, cols=72, ident=4, ident_first=True):
         pos += 1
     return(new_s)
 
-def should_output_entry(entry, url_filter, grep_req):
+def should_output_entry(entry, url_filter, grep_req, grep_res):
     """
     Inspects the entry (request) and determines if it needs to be displayed.
     """
@@ -79,6 +79,22 @@ def should_output_entry(entry, url_filter, grep_req):
     fname, ext = os.path.splitext(url.path)
     if ext in url_filter:
         return False
+
+    if grep_req is not None:
+        for header in entry['request']['headers']:
+            full_header = '%s: %s' % (header['name'], header['value'])
+            if grep_req in full_header:
+                return True
+        else:
+            return False
+
+    if grep_res is not None:
+        for header in entry['response']['headers']:
+            full_header = '%s: %s' % (header['name'], header['value'])
+            if grep_res in full_header:
+                return True
+        else:
+            return False
 
     return True
 
@@ -153,6 +169,8 @@ if __name__ == "__main__":
     parser.add_argument('--filter-img', action='store_true', help="Filter out requests for images")
     parser.add_argument('--filter-refs', action='store_true', help="Filter out requests for CSS, JS, etc")
     parser.add_argument('--filter-all', action='store_true', help="All filters")
+    parser.add_argument('--grep-req', action='store', help="Only show requests where Request headers contain GREP_REQ.")
+    parser.add_argument('--grep-res', action='store', help="Only show requests where Response headers contain GREP_RES.")
     parser.add_argument('--nocolor', action='store_true', default=False)
     parser.add_argument('har_file')
     args = parser.parse_args()
@@ -175,6 +193,6 @@ if __name__ == "__main__":
         sys.exit(2)
 
     for entry in har['log']['entries']:
-        if should_output_entry(entry, url_filter, args.grep_req):
+        if should_output_entry(entry, url_filter, args.grep_req, args.grep_res):
             output_entry(entry, not args.nocolor, args.verbose)
 
