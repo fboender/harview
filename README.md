@@ -20,7 +20,7 @@ More information is available here: http://www.electricmonk.nl/log/2013/09/16/qu
 Requirements
 ------------
 
-Python.
+Python (v2.5+)
 
 
 Installation
