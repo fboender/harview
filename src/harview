@@ -139,8 +139,11 @@ def output_entry(entry, show_color, verbose):
         if verbose > 1:
             # Print request body
             if entry['request']['method'] == 'POST':
-                sys.stdout.write('    POST data (%s)\n' % (entry['request']['postData']['mimeType']))
-                sys.stdout.write(text_wrap(entry['request']['postData']['text'] + '\n',  cols=cols, ident=8))
+                if entry['request'].get('postData') is None:
+                    sys.stdout.write('    POST (empty payload)\n')
+                else:
+                    sys.stdout.write('    POST data (%s)\n' % (entry['request']['postData']['mimeType']))
+                    sys.stdout.write(text_wrap(entry['request']['postData']['text'] + '\n',  cols=cols, ident=8))
 
         sys.stdout.write('    Response headers (status = %s)\n' % (entry['response']['status']))
         for header in entry['response']['headers']:
